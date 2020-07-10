@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 //router
-app.use('/coffe/user', require('./routes/usuario'));
+app.use(require('./routes/usuario'));
 
 
 
