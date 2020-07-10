@@ -19,7 +19,7 @@ app.use('/coffe/user', require('./routes/usuario'));
 
 //Listening
 
-app.listen(port, () => {
+app.listen(port, (req, res) => {
 
     console.log(`Server on port ${port}`);
 });
