@@ -16,10 +16,9 @@ app.use(express.json());
 app.use('/coffe/user', require('./routes/usuario'));
 
 
-
 //Listening
 
-app.listen(port, (req, res) => {
+app.listen(process.env.PORT, (req, res) => {
 
-    console.log(`Server on port ${port}`);
+    console.log(`---Server on port ${process.env.PORT}!!!---`);
 });

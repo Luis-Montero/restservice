@@ -1,26 +1,64 @@
 const express = require('express');
 const router = express.Router();
-
+const bcrypt = require('bcrypt');
 const User = require('../modelobd/modelbd');
 
 
+// router.get('/', async(req, res) => {
+
+//     const user = await User.find();
+//     //console.log(user);
+
+//     return res.status(200).send(user)
+
+
+// });
+
+
+//------------------------------------------
+
+//Servicio para obtener usuarios de mongo de forma paginada
+
 router.get('/', async(req, res) => {
 
-    const user = await User.find();
-    //console.log(user);
+    let desde = req.query.desde || 0;
+    desde = Number(desde);
 
-    return res.status(200).send(user)
+    let limite = req.query.limite || 5;
+    limite = Number(limite);
 
+    //con este parametro 'name email' le estoy pididiendo que solo me muestre esos parametrs de la base de datos
 
+    await User.find({}, 'name email')
+        .skip(desde)
+        .limit(limite)
+        .exec((err, user) => {
+
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
+            };
+
+            User.count({}, (err, conteo) => {
+
+                res.json({
+
+                    ok: true,
+                    user,
+                    quantity: conteo
+                });
+            });
+        });
 });
+
 
 router.get('/:id', async(req, res) => {
 
     const user = await User.findById(req.params.id);
 
-    return res.status(200).send(user);
-
-
+    return res.status(200).send(user)
 });
 
 
@@ -33,8 +71,7 @@ router.post('/', async(req, res) => {
 
         name: body.name,
         email: body.email,
-        password: body.password,
-        role: body.role
+        password: bcrypt.hashSync(body.password, 10)
     });
 
     await user.save((err, userStored) => {
@@ -54,10 +91,7 @@ router.post('/', async(req, res) => {
             ok: true,
             user: userStored
         });
-
-
     });
-
 });
 
 router.put('/:id', async(req, res) => {
@@ -68,7 +102,7 @@ router.put('/:id', async(req, res) => {
 
         name: req.body.name,
         email: req.body.email,
-        password: req.params.password,
+        password: req.params.password
     };
 
     await User.findByIdAndUpdate(id, { $set: user }, { new: true });
@@ -80,11 +114,36 @@ router.put('/:id', async(req, res) => {
 
 router.delete('/:id', async(req, res) => {
 
-    const user = await User.findByIdAndDelete(req.params.id);
+    const id = req.params.id;
 
-    res.json({ status: 'Deleted' });
+    await User.findByIdAndRemove(id, (err, userDelete) => {
 
+        if (err) {
 
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        };
+
+        if (!userDelete) {
+
+            return res.status(404).json({
+
+                ok: false,
+                err: { message: 'user not found' }
+            });
+        }
+
+        res.json({
+            ok: true,
+            user: {
+
+                message: 'Deleted user!!!'
+
+            }
+        });
+    });
 });
 
 module.exports = router;
