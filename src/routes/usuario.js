@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const User = require('../modelobd/modelbd');
 
+const { checkToken } = require('../middlewares/authentication');
+
+const User = require('../modelobd/modelbd');
 
 // router.get('/', async(req, res) => {
 
@@ -10,16 +12,13 @@ const User = require('../modelobd/modelbd');
 //     //console.log(user);
 
 //     return res.status(200).send(user)
-
-
 // });
-
 
 //------------------------------------------
 
 //Servicio para obtener usuarios de mongo de forma paginada
 
-router.get('/', async(req, res) => {
+router.get('/', checkToken, (req, res) => {
 
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -29,7 +28,7 @@ router.get('/', async(req, res) => {
 
     //con este parametro 'name email' le estoy pididiendo que solo me muestre esos parametrs de la base de datos
 
-    await User.find({}, 'name email')
+    User.find({}, 'name email')
         .skip(desde)
         .limit(limite)
         .exec((err, user) => {
@@ -54,15 +53,15 @@ router.get('/', async(req, res) => {
 });
 
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', checkToken, async(req, res) => {
 
     const user = await User.findById(req.params.id);
 
     return res.status(200).send(user)
 });
 
-
-router.post('/', async(req, res) => {
+'este-es-el-seed-de-desarrollo'
+router.post('/', checkToken, async(req, res) => {
 
     let body = req.body;
 
@@ -94,7 +93,7 @@ router.post('/', async(req, res) => {
     });
 });
 
-router.put('/:id', async(req, res) => {
+router.put('/:id', checkToken, async(req, res) => {
 
     const { id } = req.params;
 
@@ -112,7 +111,7 @@ router.put('/:id', async(req, res) => {
 
 });
 
-router.delete('/:id', async(req, res) => {
+router.delete('/:id', checkToken, async(req, res) => {
 
     const id = req.params.id;
 

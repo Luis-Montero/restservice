@@ -10,10 +10,8 @@ const { mongoose } = require('./database');
 app.use(express.json());
 
 
-
-
-//router
-app.use('/coffe/user', require('./routes/usuario'));
+//global route
+app.use(require('./routes/index-route'));
 
 
 //Listening
