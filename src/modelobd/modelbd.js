@@ -14,8 +14,6 @@ const UsersSchema = new Schema({
 
 });
 
-
-
 UsersSchema.methods.toJSON = function() {
 
     let users = this;

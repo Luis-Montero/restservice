@@ -21,7 +21,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 //30 day
 
 
-process.env.TOKEN_EXP = 60 * 60 * 24 * 30;
+process.env.TOKEN_EXP = '48h';
 
 
 // ============================

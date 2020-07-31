@@ -52,7 +52,6 @@ router.get('/', checkToken, (req, res) => {
         });
 });
 
-
 router.get('/:id', checkToken, async(req, res) => {
 
     const user = await User.findById(req.params.id);
@@ -60,7 +59,6 @@ router.get('/:id', checkToken, async(req, res) => {
     return res.status(200).send(user)
 });
 
-'este-es-el-seed-de-desarrollo'
 router.post('/', checkToken, async(req, res) => {
 
     let body = req.body;
